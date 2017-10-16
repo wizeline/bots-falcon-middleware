@@ -9,7 +9,7 @@ def requirements(filename):
 
 
 def get_version():
-    with open('buzon/__init__.py', 'r') as f:
+    with open('falcon_middlewares/__init__.py', 'r') as f:
         version_regex = r'^__version__\s*=\s*[\'"](.+)[\'"]'
         return re.search(version_regex, f.read(), re.MULTILINE).group(1)
 
