@@ -1,6 +1,6 @@
 import falcon
 
-from middlewares.client_secret import ClientSecretMiddleware
+from falcon_middlewares.client_secret import ClientSecretMiddleware
 
 from falcon import testing
 from sure import expect
