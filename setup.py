@@ -14,7 +14,7 @@ def get_version():
         return re.search(version_regex, f.read(), re.MULTILINE).group(1)
 
 setup(
-    name='buzon',
+    name='bots-falcon-middleware',
     version=get_version(),
     url='https://github.com/wizeline/bots-falcon-middleware',
     author='Wizeline',
