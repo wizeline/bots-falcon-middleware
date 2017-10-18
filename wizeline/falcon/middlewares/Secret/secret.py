@@ -1,7 +1,7 @@
 import falcon
 
 
-class ClientSecretMiddleware:
+class SecretMiddleware:
     def __init__(self, secret):
         self._secret = secret
 
