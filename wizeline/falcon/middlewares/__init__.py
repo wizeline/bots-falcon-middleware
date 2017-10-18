@@ -1,5 +1,5 @@
 # flake8: noqa
 __version__ = '1.0.0'
 
-from Secret import ClientMiddleware
-from JSON import JSONMiddleware
+from wizeline.falcon.middlewares.Secret import ClientMiddleware
+from wizeline.falcon.middlewares.JSON import JSONMiddleware
