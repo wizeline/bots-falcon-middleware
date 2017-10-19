@@ -3,7 +3,7 @@ import json
 import falcon
 from falcon import testing
 
-from falcon_middlewares.json import JSONMiddleware
+from wizeline.falcon.middlewares.json import JSONMiddleware
 
 from sure import expect
 
