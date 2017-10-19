@@ -13,6 +13,7 @@ def get_version():
         version_regex = r'^__version__\s*=\s*[\'"](.+)[\'"]'
         return re.search(version_regex, f.read(), re.MULTILINE).group(1)
 
+
 setup(
     name='wizeline',
     version=get_version(),
