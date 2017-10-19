@@ -13,7 +13,7 @@ class ResourceWithoutWrapper:
         resp.body = 'Bye'
 
 
-class ResourceWithoutSecret:
+class ResourceWithoutRequireSecret:
     def on_get(self, req, resp):
         resp.body = 'Pass'
 
@@ -83,7 +83,7 @@ class TestSecretMiddlewareWithoutWrapper(testing.TestCase):
             required=False
         )
         self.app = falcon.API(middleware=[self.auth])
-        self.app.add_route(TEST_ROUTE, ResourceWithoutSecret())
+        self.app.add_route(TEST_ROUTE, ResourceWithoutRequireSecret())
 
     def test_access_without_token(self):
         response = self.simulate_get(TEST_ROUTE)
