@@ -1,6 +1,6 @@
 import falcon
 
-from falcon_middlewares.client_secret import ClientSecretMiddleware
+from wizeline.falcon.middlewares.secret import APISecretMiddleware, require_secret
 
 from falcon import testing
 from sure import expect
@@ -8,14 +8,18 @@ from sure import expect
 TEST_ROUTE = '/test'
 
 
+@falcon.before(require_secret)
 class Resource:
     def on_get(self, req, resp):
         resp.body = 'Hello'
 
 
-class TestClientSecretMiddleware(testing.TestCase):
+class TestSecretMiddlewareRequired(testing.TestCase):
     def setUp(self):
-        self.auth = ClientSecretMiddleware('secret')
+        self.auth = APISecretMiddleware(
+            'secret',
+            required=True
+        )
         self.app = falcon.API(middleware=[self.auth])
         self.app.add_route(TEST_ROUTE, Resource())
 
@@ -24,6 +28,34 @@ class TestClientSecretMiddleware(testing.TestCase):
         expect(response.status).to.equal(falcon.HTTP_UNAUTHORIZED)
 
     def test_access_with_token(self):
+        response = self.simulate_get(TEST_ROUTE, headers={
+                'Authorization': 'secret'
+            })
+        expect(response.status).to.equal(falcon.HTTP_OK)
+
+    def test_access_with_wrong_token(self):
+        response = self.simulate_get(TEST_ROUTE, headers={
+                'Authorization': 'this-is-not-the-right-token'
+            })
+        expect(response.status).to.equal(falcon.HTTP_UNAUTHORIZED)
+
+
+class TestSecretMiddlewareNotRequired(testing.TestCase):
+    def setUp(self):
+        self.auth = APISecretMiddleware(
+            'secret',
+            required=False
+        )
+        self.app = falcon.API(middleware=[self.auth])
+        self.app.add_route(TEST_ROUTE, Resource())
+
+    def test_access_without_token(self):
+
+        response = self.simulate_get(TEST_ROUTE)
+        expect(response.status).to.equal(falcon.HTTP_UNAUTHORIZED)
+
+    def test_access_with_token(self):
+
         response = self.simulate_get(TEST_ROUTE, headers={
                 'Authorization': 'secret'
             })
