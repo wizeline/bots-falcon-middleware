@@ -12,7 +12,12 @@ class JSONMiddleware:
 
             try:
                 req.text = self._get_payload(req)
-                req.json = json.loads(req.text)
+
+                if req.text.strip() != '':
+                    req.json = json.loads(req.text)
+                else:
+                    req.json = {}
+
             except JSONDecodeError:
                 raise falcon.HTTPInternalServerError()
 
