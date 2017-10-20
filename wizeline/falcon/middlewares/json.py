@@ -29,7 +29,8 @@ class JSONMiddleware:
         return req.method in ('POST', 'PUT')
 
     def _is_json_content_type(self, req):
-        return req.content_type in ['application/json', 'text/json']
+        return req.content_type and \
+               ('application/json' in req.content_type or 'text/json' in req.content_type)
 
     def _get_payload(self, req):
         return req.bounded_stream.read().decode('utf-8')

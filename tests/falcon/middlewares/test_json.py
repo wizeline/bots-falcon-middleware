@@ -114,6 +114,31 @@ class JSONMiddlewareTest(testing.TestCase):
         expect(response.headers).to.contain('content-type')
         expect(response.headers['content-type']).to.contain('application/json')
 
+    def test_post_response_content_type_is_application_json_and_contains_other_thing(self):
+        payload = {'hello': 'world'}
+
+        response = self.simulate_post(
+            ECHO_ROUTE,
+            body=json.dumps(payload),
+            headers={'content-type': 'application/json; charset=utf-8'}
+        )
+
+        expect(response.status).to.equal(falcon.HTTP_OK)
+        expect(response.headers).to.contain('content-type')
+        expect(response.headers['content-type']).to.contain('application/json')
+    
+    def test_post_response_content_type_is_not_application_json_and_contains_other_thing(self):
+        payload = {'hello': 'world'}
+
+        response = self.simulate_post(
+            ECHO_ROUTE,
+            body=json.dumps(payload),
+            headers={'content-type': 'charset=utf-8'}
+        )
+
+        expect(response.status).to.equal(falcon.HTTP_UNSUPPORTED_MEDIA_TYPE)
+        expect(response.headers).to.contain('content-type')
+
     def test_post_with_text_payload(self):
         payload = 'This is plain text'
 
