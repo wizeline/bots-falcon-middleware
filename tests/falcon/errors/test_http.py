@@ -1,5 +1,4 @@
 import datetime
-
 import falcon
 
 from wizeline.falcon.errors.http import (
@@ -27,9 +26,7 @@ ERROR_HEADERS = {
 }
 
 
-def _make_client(
-        bot_http_error=None
-):
+def _make_client(bot_http_error=None):
     app = falcon.API()
     resource = FakeErrorResource(
         bot_http_error=bot_http_error
@@ -39,10 +36,7 @@ def _make_client(
 
 
 class FakeErrorResource:
-    def __init__(
-            self,
-            bot_http_error=None
-    ):
+    def __init__(self, bot_http_error=None):
         self.bot_http_error = bot_http_error
 
     def on_get(self, req, resp):
