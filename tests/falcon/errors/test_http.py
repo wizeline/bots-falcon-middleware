@@ -2,17 +2,17 @@ import datetime
 import falcon
 
 from wizeline.falcon.errors.http import (
-    BotHTTPError,
-    BotHTTPBadRequest,
-    BotHTTPUnauthorized,
-    BotHTTPForbidden,
-    BotHTTPNotFound,
-    BotHTTPMethodNotAllowed,
-    BotHTTPNotAcceptable,
-    BotHTTPConflict,
-    BotHTTPInternalServerError,
-    BotHTTPBadGateway,
-    BotHTTPServiceUnavailable
+    HTTPError,
+    HTTPBadRequest,
+    HTTPUnauthorized,
+    HTTPForbidden,
+    HTTPNotFound,
+    HTTPMethodNotAllowed,
+    HTTPNotAcceptable,
+    HTTPConflict,
+    HTTPInternalServerError,
+    HTTPBadGateway,
+    HTTPServiceUnavailable
 )
 
 from falcon.testing.test_case import TestCase
@@ -43,7 +43,7 @@ class FakeErrorResource:
         status = req.get_header('X-Error-Status')
         code = req.get_header('X-Error-Code')
         message = req.get_header('X-Error-Message')
-        raise BotHTTPError(
+        raise HTTPError(
             status,
             code=code,
             message=message
@@ -53,8 +53,8 @@ class FakeErrorResource:
         raise self.bot_http_error
 
 
-class TestBotHTTPError(TestCase):
-    def test_bot_http_error(self):
+class TestHTTPError(TestCase):
+    def test_http_error(self):
         client = _make_client()
         response = client.simulate_get(path='/fail', headers=ERROR_HEADERS)
         expect(response.status).to.be.equal('404 Not Found')
@@ -62,9 +62,9 @@ class TestBotHTTPError(TestCase):
         expect(response.json['message']).to.be.equal('Bot does not exist')
 
 
-class TestBotHTTPExtendedError(TestCase):
-    def test_bot_http_bad_request_error(self):
-        error = BotHTTPBadRequest(
+class TestHTTPExtendedError(TestCase):
+    def test_http_bad_request_error(self):
+        error = HTTPBadRequest(
             code='InvalidSyntaxRequest',
             message='The syntax of the request is not valid'
         )
@@ -74,8 +74,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['code']).to.be.equal('InvalidSyntaxRequest')
         expect(response.json['message']).to.be.equal('The syntax of the request is not valid')
 
-    def test_bot_http_unauthorized_request_error(self):
-        error = BotHTTPUnauthorized(
+    def test_http_unauthorized_request_error(self):
+        error = HTTPUnauthorized(
             code='InvalidCredentials',
             message='Your credentials are invalid',
             challenges=['bot_auth_token']
@@ -87,8 +87,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['message']).to.be.equal('Your credentials are invalid')
         expect(response.headers['WWW-Authenticate']).to.be.equal('bot_auth_token')
 
-    def test_bot_http_forbidden_request_error(self):
-        error = BotHTTPForbidden(
+    def test_http_forbidden_request_error(self):
+        error = HTTPForbidden(
             code='NotAccess',
             message='You don\'t have enough permissions to see this resource'
         )
@@ -98,8 +98,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['code']).to.be.equal('NotAccess')
         expect(response.json['message']).to.be.equal('You don\'t have enough permissions to see this resource')
 
-    def test_bot_http_not_found_request_error(self):
-        error = BotHTTPNotFound(
+    def test_http_not_found_request_error(self):
+        error = HTTPNotFound(
             code='BotDoesNotExist',
             message='The bot your looking for does not exist'
         )
@@ -109,8 +109,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['code']).to.be.equal('BotDoesNotExist')
         expect(response.json['message']).to.be.equal('The bot your looking for does not exist')
 
-    def test_bot_http_method_not_allowed_request_error(self):
-        error = BotHTTPMethodNotAllowed(
+    def test_http_method_not_allowed_request_error(self):
+        error = HTTPMethodNotAllowed(
             ['delete'],
             code='InvalidMethodForDeleteBot',
             message='This method is not allowed for delete a Bot'
@@ -122,8 +122,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['message']).to.be.equal('This method is not allowed for delete a Bot')
         expect(response.headers['allow']).to.be.equal('delete')
 
-    def test_bot_http_not_acceptable_request_error(self):
-        error = BotHTTPNotAcceptable(
+    def test_http_not_acceptable_request_error(self):
+        error = HTTPNotAcceptable(
             code='MediaFormatNotAcceptable',
             message='This media format is not supported'
         )
@@ -133,8 +133,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['code']).to.be.equal('MediaFormatNotAcceptable')
         expect(response.json['message']).to.be.equal('This media format is not supported')
 
-    def test_bot_http_conflict_request_error(self):
-        error = BotHTTPConflict(
+    def test_http_conflict_request_error(self):
+        error = HTTPConflict(
             code='BotAlreadyExists',
             message='Bot already exists'
         )
@@ -144,8 +144,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['code']).to.be.equal('BotAlreadyExists')
         expect(response.json['message']).to.be.equal('Bot already exists')
 
-    def test_bot_http_internal_server_error_request_error(self):
-        error = BotHTTPInternalServerError(
+    def test_http_internal_server_error_request_error(self):
+        error = HTTPInternalServerError(
             code='NLPEngineError',
             message='Error in NLP Engine'
         )
@@ -155,8 +155,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['code']).to.be.equal('NLPEngineError')
         expect(response.json['message']).to.be.equal('Error in NLP Engine')
 
-    def test_bot_http_bad_gateway_request_error(self):
-        error = BotHTTPBadGateway(
+    def test_http_bad_gateway_request_error(self):
+        error = HTTPBadGateway(
             code='NLPEngineError',
             message='NLP Engine is under maintenance. Try again later'
         )
@@ -166,8 +166,8 @@ class TestBotHTTPExtendedError(TestCase):
         expect(response.json['code']).to.be.equal('NLPEngineError')
         expect(response.json['message']).to.be.equal('NLP Engine is under maintenance. Try again later')
 
-    def test_bot_http_service_unavailable_request_error(self):
-        error = BotHTTPServiceUnavailable(
+    def test_http_service_unavailable_request_error(self):
+        error = HTTPServiceUnavailable(
             code='BotOperationsError',
             message='Bot Platform is under maintenance. Try again later',
             retry_after=datetime.datetime.now()

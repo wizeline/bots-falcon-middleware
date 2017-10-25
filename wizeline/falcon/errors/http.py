@@ -5,7 +5,7 @@ from falcon import util
 from falcon.http_error import HTTPError
 
 
-class BotHTTPError(HTTPError):
+class HTTPError(HTTPError):
     """Represents a generic Bot Platform HTTP error.
 
     This base error extends from Falcon HTTPError in order
@@ -26,7 +26,7 @@ class BotHTTPError(HTTPError):
             href=None,
             href_text=None
     ):
-        super(BotHTTPError, self).__init__(
+        super(HTTPError, self).__init__(
             status,
             headers=headers,
             href=href,
@@ -55,12 +55,12 @@ class BotHTTPError(HTTPError):
 class OptionalRepresentation(object):
     @property
     def has_representation(self):
-        return BotHTTPError(OptionalRepresentation, self).code is not None
+        return HTTPError(OptionalRepresentation, self).code is not None
 
 
-class BotHTTPBadRequest(BotHTTPError):
+class HTTPBadRequest(HTTPError):
     def __init__(self, code=None, message=None, **kwargs):
-        super(BotHTTPBadRequest, self).__init__(
+        super(HTTPBadRequest, self).__init__(
             status.HTTP_400,
             code,
             message,
@@ -68,14 +68,14 @@ class BotHTTPBadRequest(BotHTTPError):
         )
 
 
-class BotHTTPUnauthorized(BotHTTPError):
+class HTTPUnauthorized(HTTPError):
     def __init__(self, code=None, message=None, challenges=None, **kwargs):
         headers = kwargs.setdefault('headers', {})
 
         if challenges:
             headers['WWW-Authenticate'] = ', '.join(challenges)
 
-        super(BotHTTPUnauthorized, self).__init__(
+        super(HTTPUnauthorized, self).__init__(
             status.HTTP_401,
             code,
             message,
@@ -83,9 +83,9 @@ class BotHTTPUnauthorized(BotHTTPError):
         )
 
 
-class BotHTTPForbidden(BotHTTPError):
+class HTTPForbidden(HTTPError):
     def __init__(self, code=None, message=None, **kwargs):
-        super(BotHTTPForbidden, self).__init__(
+        super(HTTPForbidden, self).__init__(
             status.HTTP_403,
             code,
             message,
@@ -93,9 +93,9 @@ class BotHTTPForbidden(BotHTTPError):
         )
 
 
-class BotHTTPNotFound(OptionalRepresentation, BotHTTPError):
+class HTTPNotFound(OptionalRepresentation, HTTPError):
     def __init__(self, code=None, message=None, **kwargs):
-        super(BotHTTPNotFound, self).__init__(
+        super(HTTPNotFound, self).__init__(
             status.HTTP_404,
             code,
             message,
@@ -103,11 +103,11 @@ class BotHTTPNotFound(OptionalRepresentation, BotHTTPError):
         )
 
 
-class BotHTTPMethodNotAllowed(OptionalRepresentation, BotHTTPError):
+class HTTPMethodNotAllowed(OptionalRepresentation, HTTPError):
     def __init__(self, allowed_methods, code=None, message=None, **kwargs):
         new_headers = {'Allow': ', '.join(allowed_methods)}
 
-        super(BotHTTPMethodNotAllowed, self).__init__(
+        super(HTTPMethodNotAllowed, self).__init__(
             status.HTTP_405,
             code,
             message,
@@ -120,9 +120,9 @@ class BotHTTPMethodNotAllowed(OptionalRepresentation, BotHTTPError):
         self.headers.update(new_headers)
 
 
-class BotHTTPNotAcceptable(BotHTTPError):
+class HTTPNotAcceptable(HTTPError):
     def __init__(self, code=None, message=None, **kwargs):
-        super(BotHTTPNotAcceptable, self).__init__(
+        super(HTTPNotAcceptable, self).__init__(
             status.HTTP_406,
             code,
             message,
@@ -130,9 +130,9 @@ class BotHTTPNotAcceptable(BotHTTPError):
         )
 
 
-class BotHTTPConflict(BotHTTPError):
+class HTTPConflict(HTTPError):
     def __init__(self, code=None, message=None, **kwargs):
-        super(BotHTTPConflict, self).__init__(
+        super(HTTPConflict, self).__init__(
             status.HTTP_409,
             code,
             message,
@@ -140,9 +140,9 @@ class BotHTTPConflict(BotHTTPError):
         )
 
 
-class BotHTTPInternalServerError(BotHTTPError):
+class HTTPInternalServerError(HTTPError):
     def __init__(self, code=None, message=None, **kwargs):
-        super(BotHTTPInternalServerError, self).__init__(
+        super(HTTPInternalServerError, self).__init__(
             status.HTTP_500,
             code,
             message,
@@ -150,9 +150,9 @@ class BotHTTPInternalServerError(BotHTTPError):
         )
 
 
-class BotHTTPBadGateway(BotHTTPError):
+class HTTPBadGateway(HTTPError):
     def __init__(self, code=None, message=None, **kwargs):
-        super(BotHTTPBadGateway, self).__init__(
+        super(HTTPBadGateway, self).__init__(
             status.HTTP_502,
             code,
             message,
@@ -160,7 +160,7 @@ class BotHTTPBadGateway(BotHTTPError):
         )
 
 
-class BotHTTPServiceUnavailable(BotHTTPError):
+class HTTPServiceUnavailable(HTTPError):
     def __init__(self, code=None, message=None, retry_after=None, **kwargs):
         headers = kwargs.setdefault('headers', {})
 
@@ -169,7 +169,7 @@ class BotHTTPServiceUnavailable(BotHTTPError):
         elif retry_after is not None:
             headers['Retry-After'] = str(retry_after)
 
-        super(BotHTTPServiceUnavailable, self).__init__(
+        super(HTTPServiceUnavailable, self).__init__(
             status.HTTP_503,
             code,
             message,
