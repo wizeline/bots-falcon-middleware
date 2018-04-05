@@ -16,6 +16,10 @@ class APISecretMiddleware:
         return req.get_header('Authorization') == self._secret
 
     def process_resource(self, req, resp, resource, params):
+        is_api_secret_required = getattr(resource, 'is_api_secret_required', True)
+        if not is_api_secret_required:
+            return
+
         if self._is_secret_required and not self._has_valid_secret(req):
             raise falcon.HTTPUnauthorized
         req._secret = self._secret
