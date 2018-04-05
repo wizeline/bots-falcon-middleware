@@ -126,7 +126,7 @@ class JSONMiddlewareTest(testing.TestCase):
         expect(response.status).to.equal(falcon.HTTP_OK)
         expect(response.headers).to.contain('content-type')
         expect(response.headers['content-type']).to.contain('application/json')
-    
+
     def test_post_response_content_type_is_not_application_json_and_contains_other_thing(self):
         payload = {'hello': 'world'}
 
