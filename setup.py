@@ -1,11 +1,16 @@
 import re
-from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 
 def requirements(filename):
-    reqs = parse_requirements(filename, session=False)
-    return [str(r.req) for r in reqs]
+    with open(filename) as file:
+        return [req for req in map(
+            lambda line: line.strip(),
+            filter(
+                lambda text: not text.startswith('#'),
+                file.readlines()
+            )
+        )]
 
 
 def get_version():
