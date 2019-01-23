@@ -64,6 +64,7 @@ class DisabledMiddlewareResource(EchoResource):
 
 class JSONMiddlewareTest(testing.TestCase):
     def setUp(self):
+        self._default_headers = None
         json_middleware = JSONMiddleware()
         self.app = falcon.API(middleware=[json_middleware])
 
