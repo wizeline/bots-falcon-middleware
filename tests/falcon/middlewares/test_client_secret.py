@@ -8,6 +8,11 @@ from sure import expect
 TEST_ROUTE = '/test'
 
 
+class FalconCommonsTC(testing.TestCase):
+    def __init__(self, *args, **kwargs):
+        super(FalconCommonsTC, self).__init__(*args, **kwargs)
+
+
 class ResourceWithoutWrapper:
     def on_get(self, req, resp):
         resp.body = 'Bye'
@@ -33,6 +38,7 @@ class Resource:
 
 class TestSecretMiddlewareRequirePublicResource(testing.TestCase):
     def setUp(self):
+        self._default_headers = None
         self.auth = APISecretMiddleware(
             'secret',
             required=True
@@ -59,6 +65,7 @@ class TestSecretMiddlewareRequirePublicResource(testing.TestCase):
 
 class TestSecretMiddlewareRequired(testing.TestCase):
     def setUp(self):
+        self._default_headers = None
         self.auth = APISecretMiddleware(
             'secret',
             required=True
@@ -85,6 +92,7 @@ class TestSecretMiddlewareRequired(testing.TestCase):
 
 class TestSecretMiddlewareNotRequired(testing.TestCase):
     def setUp(self):
+        self._default_headers = None
         self.auth = APISecretMiddleware(
             'secret',
             required=False
@@ -111,6 +119,7 @@ class TestSecretMiddlewareNotRequired(testing.TestCase):
 
 class TestSecretMiddlewareWithoutWrapper(testing.TestCase):
     def setUp(self):
+        self._default_headers = None
         self.auth = APISecretMiddleware(
             'secret',
             required=False

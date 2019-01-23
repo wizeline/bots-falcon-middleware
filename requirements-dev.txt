@@ -1,0 +1,12 @@
+cov-core==1.15.0
+coverage==4.4.1
+flake8==3.3.0
+mock==2.0.0
+nose2==0.6.5
+nose2-cov==1.0a4
+packaging==16.8
+pycodestyle==2.3.1
+pyflakes==1.5.0
+sure==1.4.6
+tox==2.7.0
+virtualenv==15.1.0

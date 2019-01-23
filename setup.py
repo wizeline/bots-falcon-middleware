@@ -39,6 +39,6 @@ setup(
         'Programming Language :: Python 3.6.2',
         'Topic :: Utilities'
     ],
-    tests_require=requirements('requirements.txt'),
+    tests_require=requirements('requirements.txt') + requirements('requirements-dev.txt'),
     install_requires=requirements('requirements.txt'),
 )
