@@ -3,14 +3,14 @@ from json.decoder import JSONDecodeError
 
 import falcon
 
+
 class BodyParserMiddleware:
     def process_resource(self, req, resp, resource, params):
-        if self._is_middleware_enabled(resource) and self._request_method_has_payload(req):
+        if self._is_middleware_enabled(resource) and self._request_supported_methods(req):
             if self._is_json_content_type(req):
                 try:
                     req.text = self._get_payload(req)
-
-                    if req.text.strip() != '':
+                    if self._is_not_empty(req.text):
                         req.json = json.loads(req.text)
                     else:
                         req.json = {}
@@ -23,11 +23,13 @@ class BodyParserMiddleware:
                 raise falcon.HTTPUnsupportedMediaType()
 
     def _is_middleware_enabled(self, resource):
-        return not hasattr(resource, 'disable_json_middleware') \
-            or not resource.disable_json_middleware
+        return not getattr(resource, 'disable_body_parser_middleware', False)
 
-    def _request_method_has_payload(self, req):
+    def _request_supported_methods(self, req):
         return req.method in ('POST', 'PUT', 'PATCH')
+
+    def _is_not_empty(self, text):
+        return text.strip() != ''
 
     def _is_json_content_type(self, req):
         return req.content_type and \
