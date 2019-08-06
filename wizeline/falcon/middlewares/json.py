@@ -20,9 +20,9 @@ class JSONMiddleware:
                 req.json = (json.loads(req.text, encoding='utf-8')
                             if req.text.strip() != '' else {})
             except JSONDecodeError as error:
-                raise HTTPBadRequest(f'Invalid JSON received: error={error}')
+                raise HTTPBadRequest(f'Invalid JSON received: error={error}, payload={req.text}')
             except Exception as error:
-                raise HTTPInternalServerError(f'Unexpected error: error={error}')
+                raise HTTPInternalServerError(f'Unexpected error: error={error}, payload={req.text}')
 
     def process_response(self, req, resp, resource, req_succeeded):
         if not self._has_body(resp):
@@ -39,8 +39,7 @@ class JSONMiddleware:
         return req.content_type and ('application/json' in req.content_type or 'text/json' in req.content_type)
 
     def _get_payload(self, req):
-        return (req.bounded_stream.read()
-                .decode('utf-8'))
+        return req.bounded_stream.read().decode('utf-8')
 
     def _has_body(self, resp):
         return resp.body is not None
