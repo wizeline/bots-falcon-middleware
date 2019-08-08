@@ -146,6 +146,17 @@ class JSONMiddlewareTest(testing.TestCase):
         response = self.simulate_post(ECHO_ROUTE, body=payload)
         expect(response.status).to.equal(falcon.HTTP_UNSUPPORTED_MEDIA_TYPE)
 
+    def test_post_with_invalid_json_payload(self):
+        payload = '{invalid json}'
+
+        response = self.simulate_post(
+            ECHO_ROUTE,
+            body=payload,
+            headers={'content-type': 'application/json'}
+        )
+        expect(response.status).to.equal(falcon.HTTP_BAD_REQUEST)
+        expect(response.text).should_not.be.equal(None)
+
     def test_respond_with_a_json(self):
         self.settable_resource.set_json({'hello': 'world'})
 
